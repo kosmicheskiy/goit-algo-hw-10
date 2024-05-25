@@ -18,3 +18,4 @@ rectangle_area = (b - a) * max(y)
 curve_area = rectangle_area * area_ratio
 
 print("Наближена площа під кривою за допомогою методу Монте-Карло:", curve_area)
+#Наближена площа під кривою за допомогою методу Монте-Карло: 2.63625
