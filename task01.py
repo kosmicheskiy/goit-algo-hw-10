@@ -1,33 +1,31 @@
-from pulp import LpMaximize, LpProblem, LpVariable
+import pulp
 
 # Ініціалізація моделі
-model = LpProblem(name="maximize_production", sense=LpMaximize)
+model = pulp.LpProblem("Maximize_Drink_Production", pulp.LpMaximize)
 
-# Інгредієнти та обмеження ресурсів
-water = LpVariable(name="water", lowBound=0)
-sugar = LpVariable(name="sugar", lowBound=0)
-lemon_juice = LpVariable(name="lemon_juice", lowBound=0)
-fruit_puree = LpVariable(name="fruit_puree", lowBound=0)
+# Змінні рішення
+lemon_juice = pulp.LpVariable('LemonJuice', lowBound=0, cat='Continuous')
+fruit_juice = pulp.LpVariable('FruitJuice', lowBound=0, cat='Continuous')
 
-# Функція максимізації
-model += water + sugar + lemon_juice + fruit_puree
+# Цільова функція
+model += lemon_juice + fruit_juice, "Maximize_Juice_Production"
 
-# Обмеження на ресурси
-model += 2 * water + fruit_puree <= 100
-model += sugar <= 50
-model += lemon_juice <= 30
-model += 2 * water + fruit_puree <= 40
+# Обмеження
+model += 2*lemon_juice + fruit_juice <= 100, "Water_Juice_Constraint"
+model += lemon_juice <= 50, "Sugar_Juice_Constraint"
+model += lemon_juice <= 30, "Lemon_Juice_Constraint"
+model += 2*fruit_juice <= 40, "FruitPuree_Juice_Constraint"
 
-# Виробництво одиниці "Лимонаду" та "Фруктового соку"
-model += 2 * water >= 2
-model += sugar >= 1
-model += lemon_juice >= 1
-model += fruit_puree >= 2
-
-# Вирішення моделі
+# Розв'язання проблеми
 model.solve()
 
 # Виведення результатів
 print("Optimal Production:")
-print("Lemonade:", lemon_juice.value())
-print("Fruit Juice:", fruit_puree.value())
+print("Lemon Juice:", lemon_juice.value())
+print("Fruit Juice:", fruit_juice.value())
+print("Total Juice Production:", lemon_juice.value() + fruit_juice.value())
+
+#Optimal Production:
+#Lemon Juice: 30.0
+#Fruit Juice: 20.0
+#Total Juice Production: 50.0
